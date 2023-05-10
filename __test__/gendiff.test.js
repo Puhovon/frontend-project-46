@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
-import genDiff from '../src/gendiff';
+import genDiff from '../src/gendiff.js';
 
 const fileName = fileURLToPath(import.meta.url);
 const dirname = path.dirname(fileName);
