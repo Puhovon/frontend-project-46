@@ -1,11 +1,11 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
-import genDiff from '../src/gendiff.js';
+import genDiff from '../src/gendiff';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fileName = fileURLToPath(import.meta.url);
+const dirname = path.dirname(fileName);
 
-const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const getFixturePath = (filename) => path.join(dirname, '..', '__fixtures__', filename);
 // const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8').trim();
 
 const pathToTestFile1 = getFixturePath('file1.json');
