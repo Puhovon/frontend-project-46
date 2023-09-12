@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
-import genDiff from '../src/index.js';
+import gendiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +20,14 @@ const result = `{
   + verbose: true
 }`;
 
-test('gendiff', () => {
-  expect(genDiff(pathToTestFile1, pathToTestFile2)).toEqual(result);
+test('check json stylish', () => {
+  expect(gendiff('file1.json', 'file2.json')).toEqual(result);
+});
+
+test('check yaml stylish', () => {
+  expect(gendiff('file1.yaml', 'file2.yaml')).toEqual(result);
+});
+
+test('check yml stylish', () => {
+  expect(gendiff('file1.yml', 'file2.yml')).toEqual(result);
 });

@@ -2,6 +2,13 @@ import { readFileSync } from 'node:fs';
 import { cwd } from 'node:process';
 import path from 'node:path';
 import _ from 'lodash';
+import parser from './parser.js';
+
+
+const resolvedFilepath = (filepath) => filepath.includes('__fixtures__/') ? 
+  path.resolve(filepath) :
+  path.resolve(process.cwd(),'__fixtures__/', filepath);
+
 
 const addDiff = (key, acc, object1, object2) => {
   if (_.has(object1, key) && _.has(object2, key) && object1[key] === object2[key]) {
@@ -20,9 +27,8 @@ const addDiff = (key, acc, object1, object2) => {
 };
 
 const genDiff = (filePath1, filePath2) => {
-  const current = cwd();
-  const obj1 = JSON.parse(readFileSync(path.resolve(current, filePath1), 'utf-8'));
-  const obj2 = JSON.parse(readFileSync(path.resolve(current, filePath2), 'utf-8'));
+  const obj1 = parser(resolvedFilepath(filePath1));
+  const obj2 = parser(resolvedFilepath(filePath2));
   const keys = _.uniq([...Object.keys(obj2), ...Object.keys(obj1)]);
   const sortedKeys = _.sortBy(keys);
   const arrOfDiffs = sortedKeys.reduce((acc, key) => addDiff(key, acc, obj1, obj2), []);
