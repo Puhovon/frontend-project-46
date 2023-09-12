@@ -1,14 +1,10 @@
-import { readFileSync } from 'node:fs';
-import { cwd } from 'node:process';
 import path from 'node:path';
 import _ from 'lodash';
 import parser from './parser.js';
 
-
-const resolvedFilepath = (filepath) => filepath.includes('__fixtures__/') ? 
-  path.resolve(filepath) :
-  path.resolve(process.cwd(),'__fixtures__/', filepath);
-
+const resolvedFilepath = (filepath) => (filepath.includes('__fixtures__/')
+  ? path.resolve(filepath)
+  : path.resolve(process.cwd(), '__fixtures__/', filepath));
 
 const addDiff = (key, acc, object1, object2) => {
   if (_.has(object1, key) && _.has(object2, key) && object1[key] === object2[key]) {
