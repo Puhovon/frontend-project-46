@@ -1,35 +1,23 @@
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import _ from 'lodash';
-import parser from './parser.js';
+import parser from './parsers.js';
+import getDifferenceTree from './buildTree.js';
+import formatter from './formaters/index.js';
 
-const resolvedFilepath = (filepath) => (filepath.includes('__fixtures__/')
-  ? path.resolve(filepath)
-  : path.resolve(process.cwd(), '__fixtures__/', filepath));
+const resolvePath = (filePath) => path.resolve(process.cwd(), filePath);
 
-const addDiff = (key, acc, object1, object2) => {
-  if (_.has(object1, key) && _.has(object2, key) && object1[key] === object2[key]) {
-    return [...acc, `    ${key}: ${object1[key]}`];
-  }
-  if (_.has(object1, key) && _.has(object2, key) && object1[key] !== object2[key]) {
-    return [...acc, `  - ${key}: ${object1[key]}`, `  + ${key}: ${object2[key]}`];
-  }
-  if (_.has(object1, key) && !_.has(object2, key)) {
-    return [...acc, `  - ${key}: ${object1[key]}`];
-  }
-  if (!_.has(object1, key) && _.has(object2, key)) {
-    return [...acc, `  + ${key}: ${object2[key]}`];
-  }
-  return null;
+const getExtension = (filename) => path.extname(filename).slice(1);
+
+const getData = (filePath) => parser(readFileSync(filePath, 'utf-8'), getExtension(filePath));
+
+const gendiff = (filePath1, filePath2, format = 'stylish') => {
+  const path1 = resolvePath(filePath1);
+  const path2 = resolvePath(filePath2);
+
+  const data1 = getData(path1);
+  const data2 = getData(path2);
+
+  return formatter(getDifferenceTree(data1, data2), format);
 };
 
-const genDiff = (filePath1, filePath2) => {
-  const obj1 = parser(resolvedFilepath(filePath1));
-  const obj2 = parser(resolvedFilepath(filePath2));
-  const keys = _.uniq([...Object.keys(obj2), ...Object.keys(obj1)]);
-  const sortedKeys = _.sortBy(keys);
-  const arrOfDiffs = sortedKeys.reduce((acc, key) => addDiff(key, acc, obj1, obj2), []);
-  const strOfDiffs = arrOfDiffs.join('\n');
-  return `{\n${strOfDiffs}\n}`;
-};
-
-export default genDiff;
+export default gendiff;
