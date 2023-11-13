@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
 const buildTree = (data1, data2) => {
-  const data1Keys = _.keys(data1);
   const data2Keys = _.keys(data2);
+  const data1Keys = _.keys(data1);
   const sortedKeys = _.sortBy(_.union(data1Keys, data2Keys));
 
-  const children = sortedKeys.map((key) => {
+  const childs = sortedKeys.map((key) => {
     if (!_.has(data1, key)) {
       return {
         type: 'added',
@@ -41,7 +41,7 @@ const buildTree = (data1, data2) => {
       newValue: data2[key],
     };
   });
-  return children;
+  return childs;
 };
 
 const getDifferenceTree = (data1, data2) => ({
